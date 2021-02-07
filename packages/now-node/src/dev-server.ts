@@ -40,9 +40,9 @@ if (nodeMajor >= 14) {
 }
 
 // Use the project's version of Typescript if available and supports `target`
-let compiler = resolveTypescript(process.cwd());
-if (compiler) {
-  ts = requireTypescript(compiler);
+let typescriptPath = resolveTypescript(process.cwd());
+if (typescriptPath) {
+  ts = requireTypescript(typescriptPath);
   if (!(target in ts.ScriptTarget)) {
     ts = null;
   }
@@ -50,8 +50,8 @@ if (compiler) {
 
 // Otherwise fall back to using the copy that `@vercel/node` uses
 if (!ts) {
-  compiler = resolveTypescript(join(__dirname, '..'));
-  ts = requireTypescript(compiler);
+  typescriptPath = resolveTypescript(join(__dirname, '..'));
+  ts = requireTypescript(typescriptPath);
 }
 
 if (tsconfig) {
@@ -69,7 +69,7 @@ if (tsconfig) {
 }
 
 register({
-  compiler,
+  compiler: process.env.TS_NODE_COMPILER || typescriptPath,
   compilerOptions: {
     allowJs: true,
     esModuleInterop: true,
